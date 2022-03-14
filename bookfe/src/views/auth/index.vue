@@ -9,7 +9,7 @@
       <a-tabs>
         <a-tab-pane key="1" tab="登录">
           <div class="item">
-            <a-input placeholder="用户名">
+            <a-input placeholder="用户名" size="large" v-model:value="loginForm.account">
               <template #prefix>
                 <user-outlined type="user" />
               </template>
@@ -21,7 +21,7 @@
             </a-input>
           </div>
           <div class="item">
-            <a-input placeholder="密码">
+            <a-input-password placeholder="密码" label="Password"  size="large" v-model:value="loginForm.password" >
               <template #prefix>
                 <LockOutlined />
               </template>
@@ -30,18 +30,18 @@
                   <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
                 </a-tooltip>
               </template>
-            </a-input>
+            </a-input-password>
           </div>
           <div class="item3">
             <a href="">忘记密码</a>
           </div>
           <div class="item">
-            <a-button type="primary"> 登入 </a-button>
+            <a-button type="primary" @click="login"> 登入 </a-button>
           </div>
         </a-tab-pane>
         <a-tab-pane key="2" tab="注册">
           <div class="item">
-            <a-input placeholder="注册用户名" v-model:value="regForm.account">
+            <a-input placeholder="注册用户名" size="large" v-model:value="regForm.account">
               <template #prefix>
                 <user-outlined type="user" />
               </template>
@@ -54,7 +54,7 @@
           </div>
 
           <div class="item">
-            <a-input placeholder="密码" v-model:value="regForm.password">
+            <a-input-password placeholder="密码"  size="large" v-model:value="regForm.password">
               <template #prefix>
                 <LockOutlined />
               </template>
@@ -63,10 +63,10 @@
                   <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)" />
                 </a-tooltip>
               </template>
-            </a-input>
+            </a-input-password>
           </div>
           <div class="item">
-            <a-input placeholder="邀请码">
+            <a-input   size="large"  placeholder="邀请码">
               <template #prefix>
                <FileProtectOutlined />
               </template>
@@ -81,7 +81,7 @@
             <a-button type="primary"
             @click="register"
             > 注册 </a-button>
-          </div>s
+          </div>
         </a-tab-pane>
       </a-tabs>
     </div>
