@@ -1,6 +1,7 @@
 const Router = require('@koa/router');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const InviteCode = mongoose.model('InviteCode');
 const { getBody } = require("../../ults/index");
 const jwt = require("jsonwebtoken");
 const authrouter = new Router({
@@ -8,12 +9,14 @@ const authrouter = new Router({
 });
 //注册接口实现
 authrouter.post('/register', async (ctx) => {
+   //对象结构，对前端传过的ctxbody进行解构
    const {
       account,
       password,
-   } = ctx.request.body;
-   //用户名相同则返回
-   if(account ==''||password == ''){
+      invitecode,
+   } = getBody(ctx);
+   //检查字段是否为空
+   if(account ==''||password == ''||invitecode == ''){
       ctx.body = {
          code: 0,
          msg: '字段非法不能为空',
@@ -21,10 +24,27 @@ authrouter.post('/register', async (ctx) => {
       };
       return;
    }
-   const haveexist = await User.findOne({
+   //检测邀请码是否合法
+   const findcode = await InviteCode.findOne({
+      //注意这里的findone要设定查找值
+      code:invitecode,
+   }).exec();
+   //如果邀请码在数据库中不存在或者已经被注册过了，否则继续往下走正常注册流程
+   if(!findcode||findcode.user){
+      ctx.body = {
+         code: 0,
+         msg: '邀请码不正确，请联系管理员获取邀请码',
+         data: null,
+      };
+      return;
+   }
+   //查找用户是否已经存在
+   const finduser = await User.findOne({
       account,
    }).exec();
-   if (haveexist) {
+   
+   //如果查找到则返回
+   if (finduser) {
       ctx.body = {
          code: 0,
          msg: '该用户名已经存在',
@@ -32,12 +52,27 @@ authrouter.post('/register', async (ctx) => {
       };
       return;
    }
+   //对modal user进行实例化
    const user = new User({
       account,
       password,
 
    });
+   //存储到数据库
    const res = await user.save();
+
+
+   //将邀请码的user进行赋值，避免重复使用
+   findcode.user = res._id;
+   //更新时间
+   findcode.meta.updateAt =new Date().getTime();
+   
+   //存储到数据库
+   await findcode.save();
+
+
+
+   //返回注册成功
    ctx.body = {
       code: 1,
       msg: '注册成功',
@@ -45,6 +80,12 @@ authrouter.post('/register', async (ctx) => {
    };
 
 })
+
+
+
+
+
+
 //登录接口逻辑实现
 authrouter.post('/login', async (ctx) => {
    //通过请求体获取传过来的值

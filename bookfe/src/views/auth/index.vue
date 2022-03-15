@@ -66,7 +66,7 @@
             </a-input-password>
           </div>
           <div class="item">
-            <a-input   size="large"  placeholder="邀请码">
+            <a-input   size="large"  placeholder="邀请码" v-model:value="regForm.invitecode">
               <template #prefix>
                <FileProtectOutlined />
               </template>
@@ -76,6 +76,11 @@
                 </a-tooltip>
               </template>
             </a-input>
+          </div>
+          <div class="item">
+            <a-button type="primary"
+            @click="newinvite"
+            > 联系管理员新增邀请码 </a-button>
           </div>
           <div class="item">
             <a-button type="primary"
