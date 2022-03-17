@@ -1,6 +1,7 @@
 //Schemas 要注册了才能使用
 require('./Schemas/User');
 require('./Schemas/InviteCode');
+require('./Schemas/Book');
 const mongoose = require('mongoose');
 const connect = () =>{
    return new Promise((resolve) =>{
